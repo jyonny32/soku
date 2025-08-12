@@ -16,15 +16,30 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      CI: false
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+
+      - name: Use Node.js 18 LTS
+        uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 18
           cache: npm
-      - run: npm ci || npm i
-      - run: npm run build
-      - uses: actions/upload-pages-artifact@v3
+
+      - name: Print package.json scripts
+        run: cat package.json
+
+      - name: Install deps
+        run: |
+          npm install
+
+      - name: Build
+        run: |
+          npm run build
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
           path: dist
 
